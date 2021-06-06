@@ -44,9 +44,9 @@ export class Header extends Component {
         <div className="az-header">
           <div className="container">
             <div className="az-header-left">
-              <a href="#/" className="az-logo">
+              <Link to="/" className="az-logo">
                 <span></span> 인트인
-              </a>
+                </Link>
               <a
                 id="azMenuShow"
                 onClick={event => this.toggleHeaderMenu(event)}
