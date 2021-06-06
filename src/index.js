@@ -1,17 +1,12 @@
-// @flow
+import React from 'react';
+import ReactDOM from 'react-dom';
+import App from './App';
 
-import React from "react";
-import ReactDOM from "react-dom";
+import * as serviceWorker from './serviceWorker';
 
-import "./index.css";
-import "./c3jscustom.css";
+ReactDOM.render(<App />, document.getElementById('root'));
 
-import App from "./App.react";
-
-const rootElement = document.getElementById("root");
-
-if (rootElement) {
-  ReactDOM.render(<App />, rootElement);
-} else {
-  throw new Error("Could not find root element to mount to!");
-}
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: http://bit.ly/CRA-PWA
+serviceWorker.unregister();
