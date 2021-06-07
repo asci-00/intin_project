@@ -86,7 +86,7 @@ export default function Treatment({ match, history }) {
 
     if (treatments.length < 1) return <div></div>
     else {
-        const { file, stop, small, large, motility,linearity, count, ...info } = treatments['analyzes'][selected]
+        const { file, stop, small, large, motility,linearity, count, deviceKey, ...info } = treatments['analyzes'][selected]
         const { patientName } = treatments
         const chartData = [
             { country: 'stop', area: stop },
@@ -155,19 +155,19 @@ export default function Treatment({ match, history }) {
                                             <TableCell component="th" scope="row">
                                                 small
                                             </TableCell>
-                                            <TableCell>{small}</TableCell>
+                                            <TableCell>{(small * 1111000).toFixed(2)}</TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell component="th" scope="row">
                                                 stop
                                             </TableCell>
-                                            <TableCell>{stop}</TableCell>
+                                            <TableCell>{(stop * 1111000).toFixed(2)}</TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell component="th" scope="row">
                                                 large
                                             </TableCell>
-                                            <TableCell>{large}</TableCell>
+                                            <TableCell>{(large * 1111000).toFixed(2)}</TableCell>
                                         </TableRow>
                                     </TableBody>
                                 </Table>
