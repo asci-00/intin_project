@@ -37,6 +37,7 @@ const useStyles = makeStyles((theme) => ({
     topSection: {
         display: 'grid',
         gridTemplateColumns: 'repeat(2, 1fr)',
+        gridGap : '10px',
         '& video': {
             width: '80%',
             border: '2px solid grey',
@@ -48,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
         gridTemplateColumns: 'repeat(2, 1fr)',
         borderBottom: '1px solid grey',
     }, table: {},
+    totalBox : {
+        display:'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        '& video' : { width:'100%' }
+    }
 }))
 export default function Treatment({ match, history }) {
     const [treatments, setTreatment] = useState([])
@@ -62,18 +68,25 @@ export default function Treatment({ match, history }) {
             if (res.status !== 200) {
                 
             } else {
-                setTreatment({...res, analyzes : [{
-                    file : null,
-                    stop : null, 
-                    small : null, 
-                    large : null, 
-                    motility : null, 
-                    linearity : null, 
-                    count : null
-                }].concat(res['analyzes'])})
-                res['analyzes'].forEach(data => {sum += data['count']})
-
-                setTotal(sum / 4 * 1111000)
+                let stop = 0, small = 0, large = 0, motility = 0, linearity = 0, count = 0
+                res['analyzes'].forEach(data => {
+                    stop += data['stop']
+                    small += data['small']
+                    large += data['large']
+                    motility += data['motility']
+                    linearity += data['linearity']
+                    count += data['count']
+                })
+                const len = res['analyzes'].length
+                const temp = {
+                    stop : Number((stop/len).toFixed(2)), 
+                    small : Number((small/len).toFixed(2)), 
+                    large : Number((large/len).toFixed(2)),
+                    motility : Number((motility/len).toFixed(2)),
+                    linearity : Number((linearity/len).toFixed(2)),
+                    count : (count/len).toFixed(2) * 1111000,
+                }
+                setTreatment({...res, analyzes : [{...temp}].concat(res['analyzes'])})
             }
         })
         else history.push('/dashboard')
@@ -86,7 +99,7 @@ export default function Treatment({ match, history }) {
 
     if (treatments.length < 1) return <div></div>
     else {
-        const { file, stop, small, large, motility,linearity, count, deviceKey, ...info } = treatments['analyzes'][selected]
+        const { file, stop, small, large, motility, linearity, count, deviceKey, ...info } = treatments['analyzes'][selected]
         const { patientName } = treatments
         const chartData = [
             { country: 'stop', area: stop },
@@ -105,18 +118,19 @@ export default function Treatment({ match, history }) {
                             onClick={() => { setSelected(idx) }}
                         >{idx === 0 ? '종합결과' : `검사결과(${idx})`}</div>)}
                 </div>
-                
-                {selected === 0 ? <div style={{
-                    margin:'100px auto 0 auto',
-                    textAlign:'center',
-                    fontSize:'22px',
-                    minHeight:'600px',
-                }}>{patientName}님의 정자수는 <span style={{fontSize:'30px', fontWeight:'900'}}>{total}</span>개입니다.</div> : 
                 <div className={classes.section}>
                     <div className={classes.topSection}>
-                        <div><video controls src={
+                        {selected === 0 ? <div className={classes.totalBox}>
+                            {treatments['analyzes'].map((data, idx) => {
+                                if(idx === 0) return undefined
+                                return <video controls src={
+                                    `http://222.114.14.190:8080/treatment/stream/${treatments['analyzes'][idx]['file']['fileName']}`
+                                } key={idx}></video>
+                            })}
+                        </div> : <div><video controls src={
                             `http://222.114.14.190:8080/treatment/stream/${treatments['analyzes'][selected]['file']['fileName']}`
-                        }></video></div>
+                        }></video></div>}
+                        
                         <div>
                             <TableContainer style={{ border: '1px solid grey' }}>
                                 <Table className={classes.table} aria-label="simple table">
@@ -127,7 +141,14 @@ export default function Treatment({ match, history }) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {Object.keys(info).map((key, idx) => (
+                                        {selected === 0 ? 
+                                            <TableRow>
+                                                <TableCell component="th" scope="row">
+                                                    정자개수
+                                                </TableCell>
+                                                <TableCell>{treatments['analyzes'][0]['count']}</TableCell>
+                                            </TableRow>
+                                        : Object.keys(info).map((key, idx) => (
                                             <TableRow key={idx}>
                                                 <TableCell component="th" scope="row">
                                                     {key}
