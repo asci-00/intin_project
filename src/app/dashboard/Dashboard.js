@@ -83,6 +83,12 @@ export default function Dashboard(props) {
           ThirdStateCheck: () => <Remove />,
           ViewColumn: () => <ViewColumn />,
         }}
+        options={{
+          headerStyle: {
+            backgroundColor: '#666',
+            color: '#FFF'
+          }
+        }}
       />
     </div>
   )
