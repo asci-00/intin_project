@@ -40,7 +40,6 @@ export default function Dashboard(props) {
       { title: '이름', field: 'name' },
       { title: '생년월일', field: 'birth'},
       { title: '전화번호', field: 'phone'},
-      { title: '성별', field: 'gender'},
       { title: '주소', field: 'address'}
     ]
     else return [
