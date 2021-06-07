@@ -16,7 +16,6 @@ import Chart from "react-google-charts";
 const useStyles = makeStyles((theme) => ({
     navBox: {
         display: 'grid',
-        gridTemplateColumns: 'repeat(4, 1fr)',
         width: '80%', margin: 'auto'
     },
     navItem: {
@@ -50,18 +49,32 @@ const useStyles = makeStyles((theme) => ({
         borderBottom: '1px solid grey',
     }, table: {},
 }))
-
 export default function Treatment({ match, history }) {
     const [treatments, setTreatment] = useState([])
     const [selected, setSelected] = useState(0)
+    const [total, setTotal] = useState(0)
     const classes = useStyles()
 
 
     useEffect(() => {
+        let sum = 0
         if (match.params.id) Api('/treatment/info', { treatmentId: match.params.id }).then(res => {
             if (res.status !== 200) {
+                
+            } else {
+                setTreatment({...res, analyzes : [{
+                    file : null,
+                    stop : null, 
+                    small : null, 
+                    large : null, 
+                    motility : null, 
+                    linearity : null, 
+                    count : null
+                }].concat(res['analyzes'])})
+                res['analyzes'].forEach(data => {sum += data['count']})
 
-            } else setTreatment(res)
+                setTotal(sum / 4 * 1111000)
+            }
         })
         else history.push('/dashboard')
     }, [])
@@ -73,7 +86,8 @@ export default function Treatment({ match, history }) {
 
     if (treatments.length < 1) return <div></div>
     else {
-        const { file, stop, small, large, motility, linearity, ...info } = treatments['analyzes'][selected]
+        const { file, stop, small, large, motility,linearity, count, ...info } = treatments['analyzes'][selected]
+        const { patientName } = treatments
         const chartData = [
             { country: 'stop', area: stop },
             { country: 'small', area: small },
@@ -81,14 +95,23 @@ export default function Treatment({ match, history }) {
         ]
         return (
             <div>
-                <div className={classes.navBox}>
+                <div className={classes.navBox} style={{
+                    gridTemplateColumns : `repeat(${treatments['analyzes'].length}, 1fr)`
+                }}>
                     {treatments['analyzes'].map((data, idx) =>
                         <div
                             className={`${classes.navItem} ${idx === selected ? classes.active : ''}`}
                             key={idx}
                             onClick={() => { setSelected(idx) }}
-                        >검사결과({idx + 1})</div>)}
+                        >{idx === 0 ? '종합결과' : `검사결과(${idx})`}</div>)}
                 </div>
+                
+                {selected === 0 ? <div style={{
+                    margin:'100px auto 0 auto',
+                    textAlign:'center',
+                    fontSize:'22px',
+                    minHeight:'600px',
+                }}>{patientName}님의 정자수는 <span style={{fontSize:'30px', fontWeight:'900'}}>{total}</span>개입니다.</div> : 
                 <div className={classes.section}>
                     <div className={classes.topSection}>
                         <div><video controls src={
@@ -97,7 +120,7 @@ export default function Treatment({ match, history }) {
                         <div>
                             <TableContainer style={{ border: '1px solid grey' }}>
                                 <Table className={classes.table} aria-label="simple table">
-                                    <TableHead>
+                                    <TableHead style={{background : '#888'}}>
                                         <TableRow>
                                             <TableCell>측정항목</TableCell>
                                             <TableCell>측정값</TableCell>
@@ -121,7 +144,7 @@ export default function Treatment({ match, history }) {
                         <div>
                             <TableContainer style={{ border: '1px solid grey', width: '80%' }}>
                                 <Table className={classes.table} aria-label="simple table">
-                                    <TableHead>
+                                    <TableHead style={{background : '#888'}}>
                                         <TableRow>
                                             <TableCell>등급</TableCell>
                                             <TableCell>값</TableCell>
@@ -173,10 +196,11 @@ export default function Treatment({ match, history }) {
                         <div>
                             <TableContainer style={{ border: '1px solid grey', width: '80%' }}>
                                 <Table className={classes.table} aria-label="simple table">
-                                    <TableHead>
+                                    <TableHead style={{background : '#888'}}>
                                         <TableRow>
-                                            <TableCell>직진성</TableCell>
+                                            <TableCell>속성</TableCell>
                                             <TableCell>값</TableCell>
+                                            <TableCell>WHO기준</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -185,12 +209,14 @@ export default function Treatment({ match, history }) {
                                                 활동성
                                             </TableCell>
                                             <TableCell>{(motility * 100).toFixed(2)}%</TableCell>
+                                            <TableCell>{(motility * 100).toFixed(2) >= 61 ? 'Positive' : 'Nagative'}</TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell component="th" scope="row">
                                                 직진성
                                             </TableCell>
                                             <TableCell>{(linearity * 100).toFixed(2)}%</TableCell>
+                                            <TableCell>{(linearity * 100).toFixed(2) >= 55 ? 'Positive' : 'Nagative'}</TableCell>
                                         </TableRow>
                                     </TableBody>
                                 </Table>
@@ -211,7 +237,7 @@ export default function Treatment({ match, history }) {
                             />
                         </div>
                     </div>
-                </div>
+                </div>}
 
             </div>
         )

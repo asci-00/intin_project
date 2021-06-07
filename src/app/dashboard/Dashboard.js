@@ -24,7 +24,6 @@ export default function Dashboard(props) {
 
   useEffect(() => {
     Api('/patient', { hospitalId: 1 }).then(res => {
-      console.log('api')
       if (res.status !== 200) {
 
       } else setPatient(res['patientTreatments'])
