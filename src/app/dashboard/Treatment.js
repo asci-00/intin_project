@@ -147,7 +147,7 @@ export default function Treatment({ match, history }) {
                                     <TableHead style={{background : '#888'}}>
                                         <TableRow>
                                             <TableCell>등급</TableCell>
-                                            <TableCell>값</TableCell>
+                                            <TableCell>개수</TableCell>
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
@@ -155,19 +155,19 @@ export default function Treatment({ match, history }) {
                                             <TableCell component="th" scope="row">
                                                 small
                                             </TableCell>
-                                            <TableCell>{(small * 1111000).toFixed(2)}</TableCell>
+                                            <TableCell>{(small * 1111000).toFixed(0)}</TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell component="th" scope="row">
                                                 stop
                                             </TableCell>
-                                            <TableCell>{(stop * 1111000).toFixed(2)}</TableCell>
+                                            <TableCell>{(stop * 1111000).toFixed(0)}</TableCell>
                                         </TableRow>
                                         <TableRow>
                                             <TableCell component="th" scope="row">
                                                 large
                                             </TableCell>
-                                            <TableCell>{(large * 1111000).toFixed(2)}</TableCell>
+                                            <TableCell>{(large * 1111000).toFixed(0)}</TableCell>
                                         </TableRow>
                                     </TableBody>
                                 </Table>
