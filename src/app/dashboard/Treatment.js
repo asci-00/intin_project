@@ -185,9 +185,6 @@ export default function Treatment({ match, history }) {
                                     ['stop', stop],
                                     ['large', large],
                                 ]}
-                                options={{
-                                    title: 'My Daily Activities',
-                                }}
                                 rootProps={{ 'data-testid': '1' }}
                             />
                         </div>
