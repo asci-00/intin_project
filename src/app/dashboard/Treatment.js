@@ -2,7 +2,6 @@ import React, { Component, useState, useEffect } from 'react'
 import MaterialTable from 'material-table'
 import Api from '../../apis/Api'
 import { makeStyles } from '@material-ui/core/styles'
-import Button from '@material-ui/core/Button'
 
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -66,7 +65,7 @@ export default function Treatment({ match, history }) {
         let sum = 0
         if (match.params.id) Api('/treatment/info', { treatmentId: match.params.id }).then(res => {
             if (res.status !== 200) {
-                
+
             } else {
                 let stop = 0, small = 0, large = 0, motility = 0, linearity = 0, count = 0
                 res['analyzes'].forEach(data => {
@@ -79,8 +78,8 @@ export default function Treatment({ match, history }) {
                 })
                 const len = res['analyzes'].length
                 const temp = {
-                    stop : Number((stop/len).toFixed(2)), 
-                    small : Number((small/len).toFixed(2)), 
+                    stop : Number((stop/len).toFixed(2)),
+                    small : Number((small/len).toFixed(2)),
                     large : Number((large/len).toFixed(2)),
                     motility : Number((motility/len).toFixed(2)),
                     linearity : Number((linearity/len).toFixed(2)),
@@ -130,7 +129,7 @@ export default function Treatment({ match, history }) {
                         </div> : <div><video controls src={
                             `http://222.114.14.190:8080/treatment/stream/${treatments['analyzes'][selected]['file']['fileName']}`
                         }></video></div>}
-                        
+
                         <div>
                             <TableContainer style={{ border: '1px solid grey' }}>
                                 <Table className={classes.table} aria-label="simple table">
@@ -141,7 +140,7 @@ export default function Treatment({ match, history }) {
                                         </TableRow>
                                     </TableHead>
                                     <TableBody>
-                                        {selected === 0 ? 
+                                        {selected === 0 ?
                                             <TableRow>
                                                 <TableCell component="th" scope="row">
                                                     정자개수
